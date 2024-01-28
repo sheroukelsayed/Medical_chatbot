@@ -20,19 +20,22 @@ import pandas as pd
 import numpy as np
 import nltk
 
+!pip install --upgrade simplet5
+from simplet5 import SimpleT5
+!pip install rouge-score
+from rouge_score import rouge_scorer
+
 train_data=pd.read_csv('/content/drive/My Drive/QA/train.csv')
 test_data=pd.read_csv('/content/drive/My Drive/QA/MedInfo2019-QA-Medications.csv')
 
-# Convert the 'Age' column to string
+
 test_data["Question"] = test_data["Question"].astype(str)
 test_data["Answer"]= test_data["Answer"].astype(str)
 
-train_data
 
 train_data_subset = train_data[["Question", "Answer"]]
 test_data_subset = test_data[["Question", "Answer"]]
 
-!pip install --upgrade simplet5
 
 merged_df = pd.concat([train_data_subset, test_data_subset], ignore_index=True)
 
@@ -47,7 +50,7 @@ from sklearn.model_selection import train_test_split
 # Step 3: Split into training and testing sets using train_test_split
 train_df, test_df = train_test_split(shuffled_df, test_size=0.3, random_state=42)
 
-from simplet5 import SimpleT5
+
 
 model = SimpleT5()
 model.from_pretrained(model_type="t5", model_name="t5-base")
@@ -79,7 +82,7 @@ model.train(train_df =df_train,
             target_max_token_len=128,
             batch_size=16, max_epochs=5)
 
-! ( cd medical ; ls )
+
 
 Question="what do you know about heart diseases?"
 
@@ -88,8 +91,7 @@ print(Answer)
 
 predictions = model.predict(df_test)
 
-!pip install rouge-score
-from rouge_score import rouge_scorer
+
 
 scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
 
@@ -113,9 +115,6 @@ def generate_response(user_input):
 
     return response
 
-!pip install  Flask
-
-!pip install Flask
 
 
 
